@@ -1,0 +1,43 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: white;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px ;
+    background-color:lightblue;
+    width: 500px;
+}
+
+.row {
+    margin-bottom: 20px;
+}
+
+.time {
+    font-size: 18px;
+    font-weight: bold;
+    color:blue;
+}
+
+.text {
+    font-size: 14px;
+    color: royalblue;
+}
+
+.italic-text {
+    font-style: italic;
+    font-weight: bold;
+}
