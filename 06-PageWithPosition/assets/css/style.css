@@ -1,0 +1,94 @@
+*{
+    margin: 0;
+    padding: 0;
+
+}
+
+.container{
+
+    display: flex;
+
+}
+.sidebar{
+    width: 20%;
+    height: 100vh;
+
+}
+.sidebar .salam{
+margin: 20px;
+}
+.sukriyye{
+    margin: 20px;  
+}
+.sirinova{
+    margin: 20px;  
+}
+.class{
+    margin: 20px;
+}
+.class .gul{
+    display: flex;
+    flex-wrap: wrap;
+
+}
+.class .gul p {
+    margin: 10px;
+    border: 2px solid black;
+ padding: 10px;
+}
+.ayse{
+    margin:20px;
+    display: flex;
+    flex-wrap: wrap;
+    
+}
+.boxlar{
+    border-radius: 50%;
+    height: 5vh;
+    display: flex;
+    margin: 4px;
+ 
+    align-items: center;
+    width: 10%;
+    justify-content: center;
+}
+
+
+.container .box{
+
+    width: 60%;
+    display: flex; 
+    flex-wrap: wrap;
+  
+    margin: 40px auto;
+
+   
+}
+.container .box .boxes{
+    width: 30%;
+    background-color: rgb(185, 178, 178);
+    margin: 10px;
+    position: relative;
+
+}
+.container .box .boxes h2{
+    position: absolute;
+    top: 5%;
+    font-size: 15px;
+    padding: 10px;
+    color: rgb(255, 255, 255);
+    background-color: black;
+   
+}
+
+.container .box .boxes img{
+    width: 100%;
+    object-fit: contain;
+    height: 250px;
+    margin: 15px auto;
+    text-align: center;
+}
+
+.text{
+text-align: center;
+}
