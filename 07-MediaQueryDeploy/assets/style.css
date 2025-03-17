@@ -1,36 +1,169 @@
-#nav_area{
+#nav_area {
     height: 80px;
     padding: 15px;
-    background-color: aqua;
+    background-color: rgb(255, 255, 255);
 }
 
-.nav{
+.nav {
     height: 80%;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-.responsive{
+
+.responsive {
     display: flex;
     /* flex: 1; */
     justify-content: space-between;
 }
-.header_area{
+
+.header_area {
     height: 80px;
     display: flex;
     flex: 1;
     align-items: center;
 }
 
-.items{
+.items {
     color: black;
 }
-.nav_list{
+
+.nav_list {
     display: flex;
     gap: 3rem;
+    font-size: 14px Poppins, sans-serif;
 }
-.container{
+
+.container {
     height: 60px;
     width: 1140px;
     padding: 15px;
+}
+
+.img {
+    width: 20px;
+    height: 10;
+}
+
+.nav_list-item {}
+
+.burger-icon {
+    display: none;
+    cursor: pointer;
+
+    i {
+        color: black;
+    }
+}
+
+main .opening-section {
+    display: flex;
+}
+
+main img {
+    width: 300px !important;
+    height: 300px !important;
+}
+
+main .images-sections {
+    display: flex;
+    gap: 30px;
+}
+
+.left-section {
+    width: 50%;
+    position: relative;
+
+    img {
+        width: 100% !important;
+        height: 100% !important;
+    }
+}
+
+.left-section-text {
+    position: absolute;              
+    top: 50%;   
+    left: 50%;                     
+    transform: translate(-50%, -50%)
+}
+
+.right-section {
+    width: 50%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.mens-latest {
+    margin-top: 40px;
+    h1, p {
+        color: black;
+        padding: 0px 10rem;
+    }
+}
+
+.mens-images {
+    margin-top: 30px;
+    display: flex;
+    padding: 0px 10rem;
+    justify-content: space-between;
+}
+
+@media (max-width: 400px) {
+
+    .container {
+        width: 100% !important;
+        padding: 0;
+    }
+
+    .burger-icon {
+        display: block !important;
+
+        i {
+            color: black !important;
+        }
+    }
+
+    .nav_list {
+        display: none;
+    }
+
+    main .images-sections {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .left-section {
+        display: none;
+    }
+
+    .right-section {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        width: 100% !important;
+
+        img {
+            width: 100% !important;
+        }
+    }
+
+    .mens-latest {
+        h1, p {
+            padding: 0px !important;
+        }
+    }
+
+    .mens-images {
+        width: 100% !important;
+        margin-top: 30px;
+        display: flex;
+        padding: 0 !important;
+        flex-direction: column;
+
+        img {
+            width: 100% !important;
+        }
+    }
 }
