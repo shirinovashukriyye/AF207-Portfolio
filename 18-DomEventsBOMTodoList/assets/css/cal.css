@@ -62,4 +62,30 @@ body {
     color: white;
     background-color: #a5d6a7; 
   }
+
+
+  body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+.container {
+    display: flex;
+    gap: 10px; /* elementlər arası boşluq */
+    flex-wrap: wrap; /* ekran kiçik olanda yeni sətrə keçsin */
+    align-items: center;
+}
+
+input[type="text"] {
+    width: 100px;
+    padding: 8px;
+    font-size: 16px;
+}
+
+button {
+    padding: 8px 12px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
   
