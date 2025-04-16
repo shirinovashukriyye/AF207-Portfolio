@@ -1,89 +1,51 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const form = document.querySelector("form");
-    const usernameInput = document.querySelector("#username");
-    const passwordInput = document.querySelector("#password");
-  
-    const LOCKOUT_TIME = 15 * 60 * 1000;
-    let loginAttempts = JSON.parse(localStorage.getItem("loginAttempts")) || {};
-    let users = JSON.parse(localStorage.getItem("users")) || [];
-  
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-  
-      const identifier = usernameInput.value.trim();
-      const password = passwordInput.value.trim();
-  
-      const currentTime = Date.now();
-  
-  
-      if (
-        loginAttempts[identifier] &&
-        loginAttempts[identifier].lockedUntil > currentTime
-      ) {
-        const mins = Math.ceil(
-          (loginAttempts[identifier].lockedUntil - currentTime) / 60000
-        );
-        showToast(` ${mins}`, "red");
-        return;
-      }
-  
-  
-      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
-      const isUsername = /^[a-zA-Z0-9_-]{3,20}$/.test(identifier);
-  
-      if (!isEmail && !isUsername) {
-        showToast("Username or email is not in the correct format.", "red");
-        return;
-      }
-  
-  
-      const passwordRegex =
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%&])[A-Za-z\d@#$%&]{8,}$/;
-      if (!passwordRegex.test(password)) {
-        showToast("Password does not meet the requirements.", "red");
-        return;
-      }
-  
-   
-      const user = users.find(
-        (u) => (u.username === identifier || u.email === identifier) && u.password === password
-      );
-  
-      if (!user) {
-        if (!loginAttempts[identifier]) {
-          loginAttempts[identifier] = { count: 1, lockedUntil: 0 };
-        } else {
-          loginAttempts[identifier].count++;
-          if (loginAttempts[identifier].count >= 5) {
-            loginAttempts[identifier].lockedUntil = currentTime + LOCKOUT_TIME;
-            loginAttempts[identifier].count = 0;
-          }
-        }
-  
-        localStorage.setItem("loginAttempts", JSON.stringify(loginAttempts));
-        showToast("Username və ya password is incorrect.", "red");
-        return;
-      }
-  
+const loginForm = document.getElementById("loginForm");
 
-      delete loginAttempts[identifier];
-      localStorage.setItem("loginAttempts", JSON.stringify(loginAttempts));
-      localStorage.setItem("loggedInUser", JSON.stringify(user));
-  
-      showToast("Validation successfully!", "green");
-  
-    });
-  
-    function showToast(message, color) {
-      Toastify({
-        text: message,
-        duration: 3000,
-        gravity: "top",
-        position: "right",
-        style: {
-          background: color === "green" ? "green" : "red",
-        },
-      }).showToast();
+if (loginForm) {
+  const loginInput = document.getElementById("loginInput");
+  const loginPassword = document.getElementById("loginPassword");
+  const loginError = document.getElementById("loginError");
+  const passwordError = document.getElementById("passwordError");
+
+  let loginAttempts = JSON.parse(localStorage.getItem("loginAttempts")) || { count: 0, lockTime: null };
+
+  loginForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const loginValue = loginInput.value.trim();
+    const password = loginPassword.value;
+
+    const now = new Date().getTime();
+
+    if (loginAttempts.lockTime && now < loginAttempts.lockTime) {
+      const remaining = Math.ceil((loginAttempts.lockTime - now) / 1000 / 60);
+      showToast(`Hesab bloklanıb. ${remaining} dəqiqə sonra yenidən cəhd edin.`, "linear-gradient(to right, #ff0000, #ff6a00)");
+      return;
     }
+
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    const user = users.find(u => (u.username === loginValue || u.email === loginValue) && u.password === password);
+
+    loginError.textContent = "";
+    passwordError.textContent = "";
+
+    if (!user) {
+      loginAttempts.count++;
+      if (loginAttempts.count >= 5) {
+        loginAttempts.lockTime = now + 15 * 60 * 1000; // 15 dəqiqəlik blok
+        showToast("Çoxlu yanlış cəhd. Hesab 15 dəqiqəlik bağlandı.", "linear-gradient(to right, #ff0000, #ff6a00)");
+      } else {
+        showToast("İstifadəçi adı/email və ya şifrə yalnışdır.", "linear-gradient(to right, #ff0000, #ff6a00)");
+      }
+      localStorage.setItem("loginAttempts", JSON.stringify(loginAttempts));
+      return;
+    }
+
+
+    localStorage.setItem("currentUser", JSON.stringify(user));
+    localStorage.removeItem("loginAttempts");
+    showToast("Uğurla giriş etdiniz!");
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 1000);
   });
-  
+}

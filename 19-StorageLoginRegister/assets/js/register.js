@@ -1,97 +1,107 @@
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%&!^*()_+\-=]).{8,}$/;
-const usernameRegex = /^[a-zA-Z0-9_-]{3,20}$/;
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const registerForm = document.getElementById("registerForm");
+const usernameInput = document.getElementById("username");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const confirmPasswordInput = document.getElementById("confirmPassword");
 
-document.addEventListener("DOMContentLoaded", () => {
-  let users = JSON.parse(localStorage.getItem("users")) || [];
+const usernameError = document.getElementById("usernameError");
+const emailError = document.getElementById("emailError");
+const passwordError = document.getElementById("passwordError");
+const confirmError = document.getElementById("confirmError");
 
-  const form = document.querySelector("form");
-  const nameInput = document.querySelector("#name");
-  const usernameInput = document.querySelector("#username");
-  const emailInput = document.querySelector("#email");
-  const passwordInput = document.querySelector("#password");
-  const confirmPasswordInput = document.querySelector("#confirmpassword");
+const passwordStrengthIcon = document.getElementById("passwordStrengthIcon");
 
-  passwordInput.addEventListener("input", handlePasswordStrength)
+function isUsernameValid(username) {
+  return /^[a-zA-Z0-9_-]{3,20}$/.test(username);
+}
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
+function isEmailValid(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
 
-    const name = nameInput.value.trim();
-    const username = usernameInput.value.trim();
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
-    const confirmPassword = confirmPasswordInput.value;
+function isStrongPassword(password) {
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%&])[A-Za-z\d@#$%&]{8,}$/.test(password);
+}
 
-    if (!usernameRegex.test(username)) {
-      return showToast("Username must be between 3-20 characters and contain only letters, numbers, etc.", "error");
-    }
+function showToast(text, color = "linear-gradient(to right, #00b09b, #96c93d)") {
+  Toastify({
+    text,
+    duration: 3000,
+    close: true,
+    gravity: "top",
+    position: "right",
+    style: {
+      background: color,
+    },
+  }).showToast();
+}
 
-    if (!emailRegex.test(email)) {
-      return showToast("Email is incorrect", "error");
-    }
-
-    if (!passwordRegex.test(password)) {
-      return showToast("Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character.", "error");
-    }
-
-    if (password !== confirmPassword) {
-      return showToast("Password and verification must be the same.", "error");
-    }
-
-    const userExists = users.some(
-      (user) => user.username === username || user.email === email
-    );
-
-    if (userExists) {
-      return showToast("This username or email already exists.", "error");
-    }
-
-    const id = uuidv4();
-    const newUser = {
-      id,
-      name,
-      username,
-      email,
-      password,
-    };
-
-    users.push(newUser);
-    localStorage.setItem("users", JSON.stringify(users));
-
-    showToast("Validation successfully!", "success");
-    form.reset();
-    resetPasswordIndicator();
-  });
-
-  function handlePasswordStrength() {
-    const isStrong = passwordRegex.test(passwordInput.value);
-    passwordInput.classList.remove("is-valid", "is-invalid");
-    if (isStrong) {
-      passwordInput.classList.add("is-valid");
-    } else {
-      passwordInput.classList.add("is-invalid");
-    }
+function checkPasswordStrength(password) {
+  if (isStrongPassword(password)) {
+    passwordStrengthIcon.textContent = "✔️";
+    passwordStrengthIcon.style.color = "green";
+  } else {
+    passwordStrengthIcon.textContent = "❌";
+    passwordStrengthIcon.style.color = "red";
   }
+}
 
-  function resetPasswordIndicator() {
-    passwordInput.classList.remove("is-valid", "is-invalid");
-  }
-
-  function showToast(message, type = "info") {
-    Toastify({
-      text: message,
-      duration: 3000,
-      gravity: "top",
-      position: "right",
-      backgroundColor:
-        type === "success"
-          ? "green"
-          : type === "error"
-          ? "red"
-          : "#333",
-    }).showToast();
-  }
+passwordInput.addEventListener("input", () => {
+  checkPasswordStrength(passwordInput.value);
 });
 
+registerForm.addEventListener("submit", function (e) {
+  e.preventDefault();
 
+  const username = usernameInput.value.trim();
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+  const confirmPassword = confirmPasswordInput.value;
+
+  let hasError = false;
+
+  usernameError.textContent = "";
+  emailError.textContent = "";
+  passwordError.textContent = "";
+  confirmError.textContent = "";
+
+  if (!isUsernameValid(username)) {
+    usernameError.textContent = "İstifadəçi adı 3-20 simvol və yalnız hərf, rəqəm, alt xətt və tire ola bilər.";
+    hasError = true;
+  }
+
+  if (!isEmailValid(email)) {
+    emailError.textContent = "Düzgün email formatı daxil edin.";
+    hasError = true;
+  }
+
+  if (!isStrongPassword(password)) {
+    passwordError.textContent = "Şifrə güclü olmalıdır: 8 simvol, böyük/kiçik hərf, rəqəm və xüsusi simvol.";
+    hasError = true;
+  }
+
+  if (password !== confirmPassword) {
+    confirmError.textContent = "Şifrələr uyğun deyil.";
+    hasError = true;
+  }
+
+  const users = JSON.parse(localStorage.getItem("users") || "[]");
+  if (users.find(user => user.username === username)) {
+    usernameError.textContent = "Bu istifadəçi adı artıq mövcuddur.";
+    hasError = true;
+  }
+
+  if (users.find(user => user.email === email)) {
+    emailError.textContent = "Bu email artıq mövcuddur.";
+    hasError = true;
+  }
+
+  if (!hasError) {
+    users.push({ username, email, password });
+    localStorage.setItem("users", JSON.stringify(users));
+    showToast("Uğurla qeydiyyatdan keçdiniz!");
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 1000);
+  }
+});
