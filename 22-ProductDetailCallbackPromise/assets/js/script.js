@@ -240,6 +240,7 @@ let products = [
     }
   }
 ]
+
 document.addEventListener("DOMContentLoaded", () => {
   let users = JSON.parse(localStorage.getItem("users")) || [];
   let isLoginedUser = users.find(user => user.isLogged === true);
@@ -288,79 +289,99 @@ document.addEventListener("DOMContentLoaded", () => {
 
   updateUserStatus();
 
+  let cards = document.querySelector(".cards");
+  cards.innerHTML = "";
+
+
   function createUserCard() {
-    let cards = document.querySelector(".cards");
-    cards.innerHTML = "";
 
-    products.forEach(product => {
-      let card = document.createElement("div");
-      card.classList.add("card");
-
-      let heartIcon = document.createElement('i');
-      heartIcon.classList.add('card-heart', 'fa-heart');
-
-      let isInWishlist = isLoginedUser.wishlist.some(item => item.id === product.id);
-      if (isInWishlist) {
-        heartIcon.classList.add("fa-solid");
-      } else {
-        heartIcon.classList.add("fa-regular");
-      }
-
-      heartIcon.addEventListener("click", () => {
-        toggleAddWishlist(product.id, heartIcon);
+    let promise=new Promise((resolve, reject)=>{
+      let items = products.map((users) => users.name)
+      resolve(items)
+    })
+    .then((data)=>{
+      products.forEach(product => {
+        let card = document.createElement("div");
+        card.classList.add("card");
+  
+        let heartIcon = document.createElement('i');
+        heartIcon.classList.add('card-heart', 'fa-heart');
+  
+        let isInWishlist = isLoginedUser.wishlist.some(item => item.id === product.id);
+        if (isInWishlist) {
+          heartIcon.classList.add("fa-solid");
+        } else {
+          heartIcon.classList.add("fa-regular");
+        }
+  
+        heartIcon.addEventListener("click", (e) => {
+          e.stopPropagation()
+          toggleAddWishlist(product.id, heartIcon);
+        });
+  
+  
+        card.addEventListener("click",()=>{
+          window.location.href=`detail.html?id=${product.id}`
+        })
+  
+        let cardImage = document.createElement("div");
+        cardImage.classList.add("card-image");
+  
+        let img = document.createElement("img");
+        img.src = product.image;
+  
+        let cardContent = document.createElement("div");
+        cardContent.classList.add("card-content");
+  
+        let cardTitle = document.createElement("h5");
+        cardTitle.classList.add("card-title");
+        cardTitle.textContent = `${product.title.slice(0, 20)}...`;
+  
+        let cardCategory = document.createElement("p");
+        cardCategory.classList.add("card-category");
+        cardCategory.textContent = product.category;
+  
+        let cardFooter = document.createElement("div");
+        cardFooter.classList.add("card-footer");
+  
+        let cardPrice = document.createElement("span");
+        cardPrice.classList.add("card-price");
+        cardPrice.textContent = `$${product.price}`;
+  
+        let cardRating = document.createElement("div");
+        cardRating.classList.add("card-rating");
+  
+        let cardRate = document.createElement("span");
+        cardRate.textContent = `⭐ ${product.rating.rate}`;
+  
+        let cardReviewsCount = document.createElement("span");
+        cardReviewsCount.textContent = `${product.rating.count}`;
+  
+        let cardButton = document.createElement("button");
+        cardButton.classList.add("add-button");
+        cardButton.textContent = "Add basket";
+  
+   
+        cardButton.addEventListener("click", (e) => {
+          e.stopPropagation()
+          addBasket(product.id);
+        });
+  
+  
+        cardRating.append(cardRate, cardReviewsCount);
+        cardFooter.append(cardPrice, cardRating);
+        cardContent.append(cardTitle, cardCategory, cardFooter);
+        cardImage.appendChild(img);
+        card.append(heartIcon, cardImage, cardContent);
+        card.append(cardButton, cardRating, cardButton)
+        cards.appendChild(card);
       });
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
 
-      let cardImage = document.createElement("div");
-      cardImage.classList.add("card-image");
-
-      let img = document.createElement("img");
-      img.src = product.image;
-
-      let cardContent = document.createElement("div");
-      cardContent.classList.add("card-content");
-
-      let cardTitle = document.createElement("h5");
-      cardTitle.classList.add("card-title");
-      cardTitle.textContent = `${product.title.slice(0, 20)}...`;
-
-      let cardCategory = document.createElement("p");
-      cardCategory.classList.add("card-category");
-      cardCategory.textContent = product.category;
-
-      let cardFooter = document.createElement("div");
-      cardFooter.classList.add("card-footer");
-
-      let cardPrice = document.createElement("span");
-      cardPrice.classList.add("card-price");
-      cardPrice.textContent = `$${product.price}`;
-
-      let cardRating = document.createElement("div");
-      cardRating.classList.add("card-rating");
-
-      let cardRate = document.createElement("span");
-      cardRate.textContent = `⭐ ${product.rating.rate}`;
-
-      let cardReviewsCount = document.createElement("span");
-      cardReviewsCount.textContent = `${product.rating.count}`;
-
-      let cardButton = document.createElement("button");
-      cardButton.classList.add("add-button");
-      cardButton.textContent = "Add basket";
-
-      // Burada, addBasket fonksiyonuna ürünün ID'sini parametre olarak gönderiyoruz
-      cardButton.addEventListener("click", () => {
-        addBasket(product.id);  // product.id, her ürün için benzersiz ID'dir
-      });
-
-
-      cardRating.append(cardRate, cardReviewsCount);
-      cardFooter.append(cardPrice, cardRating);
-      cardContent.append(cardTitle, cardCategory, cardFooter);
-      cardImage.appendChild(img);
-      card.append(heartIcon, cardImage, cardContent);
-      card.append(cardButton, cardRating, cardButton)
-      cards.appendChild(card);
-    });
+ 
   }
 
   function toggleAddWishlist(productId, heartIcon) {
@@ -395,7 +416,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function addBasket(productId) {
     if (!isLoginedUser) {
-      toastifyByPage("Lütfen giriş yapın!");
+      toatifyByPage("Lütfen giriş yapın!");
       return;
     }
 
@@ -408,14 +429,14 @@ document.addEventListener("DOMContentLoaded", () => {
       let productToAdd = products.find(product => product.id === productId);
       if (productToAdd) {
         basket.push({ ...productToAdd, count: 1 });
-        alert("Ürün sepete eklendi.");
+        toatifyByPage("Ürün sepete eklendi.");
       } else {
-        alert("Ürün bulunamadı.");
+        toatifyByPage("Ürün bulunamadı.");
         return;
       }
     } else {
       findProduct.count++;
-      alert("Ürün adedi artırıldı.");
+      toatifyByPage("Ürün adedi artırıldı.");
     }
 
     isLoginedUser.basket = basket;

@@ -240,206 +240,73 @@ let products = [
     }
   }
 ]
-document.addEventListener("DOMContentLoaded", () => {
-  let users = JSON.parse(localStorage.getItem("users")) || [];
-  let isLoginedUser = users.find(user => user.isLogged === true);
-  let basket = isLoginedUser.basket
 
-  let userBtn = document.querySelector(".username");
-  let login = document.querySelector(".login");
-  let register = document.querySelector(".register");
-  let logout = document.querySelector(".logout");
-  let edit = document.querySelector(".edit");
-  let bag = document.querySelector(".count")
+let Url = new URLSearchParams(location.search)
 
-  function basketCount() {
-    let userBasket = isLoginedUser ? basket : 0
-    let totalCount = userBasket.reduce((a, b) => a + b.count, 0)
-    bag.innerText = totalCount
+let id = Url.get("id")
+
+let findProduct=products.find((product)=> product.id == id )
+
+let productContainer = document.querySelector(".product-container")
+
+productContainer.innerHTML = `
+ <div class="product-image">
+            <img class="img" src="${findProduct.image}" alt="Product image">
+          </div>
+          <div class="product-details">
+            <h4 class="product-title">${findProduct.title}</h4>
+            <p class="product-category">${findProduct.category}</p>
+            <p class="product-price">${findProduct.price}</p>
+            <p class="product-description">${findProduct.description}</p>
+          </div>
+          <div class="product-rating">
+            <span>⭐ ${findProduct.rating.rate}</span>
+            <span>(${findProduct.rating.count} reviews)</span>
+          </div>
+
+          <div class="quantity-selector">
+            <button class="btn-minus">-</button>
+            <input type="number" value="1" min="1">
+            <button class="btn-plus">+</button>
+          </div> 
+              <button class="btn btn-danger add-to-cart-btn">Add to cart
+        </button>
+`
+
+const addBasketButton = document.querySelector(".add-to-cart-btn");
+let users = JSON.parse(localStorage.getItem("users")) || [];
+
+const activeUser = users.find(user => user.isLogged === true);
+
+function addBasket(productId) {
+  if (!activeUser) {
+    console.error("Heç bir istifadəçi daxil olmayıb.");
+    return;
   }
 
-  let logoutUserFunction = () => {
-    if (isLoginedUser) {
-      isLoginedUser.isLogged = false;
-      localStorage.setItem("users", JSON.stringify(users));
-      isLoginedUser = null;
-      updateUserStatus();
-    }
-  };
+  let basket = activeUser.basket || [];
 
-  logout.addEventListener("click", logoutUserFunction);
-
-
-  function updateUserStatus() {
-    if (isLoginedUser) {
-      userBtn.textContent = isLoginedUser.name;
-      register.classList.add("d-none");
-      login.classList.add("d-none");
-      logout.classList.remove("d-none");
-      edit.classList.remove("d-none");
-    } else {
-      userBtn.textContent = "Username";
-      register.classList.remove("d-none");
-      login.classList.remove("d-none");
-      logout.classList.add("d-none");
-      edit.classList.add("d-block");
-    }
+  let item = basket.find(i => i.id === productId);
+  if (item) {
+    item.count += 1;
+  } else {
+    basket.push({ id: productId, count: 1 });
   }
 
-  updateUserStatus();
+  activeUser.basket = basket;
 
-  function createUserCard() {
-    let cards = document.querySelector(".cards");
-    cards.innerHTML = "";
-
-    products.forEach(product => {
-      let card = document.createElement("div");
-      card.classList.add("card");
-
-      let heartIcon = document.createElement('i');
-      heartIcon.classList.add('card-heart', 'fa-heart');
-
-      let isInWishlist = isLoginedUser.wishlist.some(item => item.id === product.id);
-      if (isInWishlist) {
-        heartIcon.classList.add("fa-solid");
-      } else {
-        heartIcon.classList.add("fa-regular");
-      }
-
-      heartIcon.addEventListener("click", () => {
-        toggleAddWishlist(product.id, heartIcon);
-      });
-
-      let cardImage = document.createElement("div");
-      cardImage.classList.add("card-image");
-
-      let img = document.createElement("img");
-      img.src = product.image;
-
-      let cardContent = document.createElement("div");
-      cardContent.classList.add("card-content");
-
-      let cardTitle = document.createElement("h5");
-      cardTitle.classList.add("card-title");
-      cardTitle.textContent = `${product.title.slice(0, 20)}...`;
-
-      let cardCategory = document.createElement("p");
-      cardCategory.classList.add("card-category");
-      cardCategory.textContent = product.category;
-
-      let cardFooter = document.createElement("div");
-      cardFooter.classList.add("card-footer");
-
-      let cardPrice = document.createElement("span");
-      cardPrice.classList.add("card-price");
-      cardPrice.textContent = `$${product.price}`;
-
-      let cardRating = document.createElement("div");
-      cardRating.classList.add("card-rating");
-
-      let cardRate = document.createElement("span");
-      cardRate.textContent = `⭐ ${product.rating.rate}`;
-
-      let cardReviewsCount = document.createElement("span");
-      cardReviewsCount.textContent = `${product.rating.count}`;
-
-      let cardButton = document.createElement("button");
-      cardButton.classList.add("add-button");
-      cardButton.textContent = "Add basket";
-
-      // Burada, addBasket fonksiyonuna ürünün ID'sini parametre olarak gönderiyoruz
-      cardButton.addEventListener("click", () => {
-        addBasket(product.id);  // product.id, her ürün için benzersiz ID'dir
-      });
-
-
-      cardRating.append(cardRate, cardReviewsCount);
-      cardFooter.append(cardPrice, cardRating);
-      cardContent.append(cardTitle, cardCategory, cardFooter);
-      cardImage.appendChild(img);
-      card.append(heartIcon, cardImage, cardContent);
-      card.append(cardButton, cardRating, cardButton)
-      cards.appendChild(card);
-    });
+  const index = users.findIndex(u => u.id === activeUser.id);
+  if (index !== -1) {
+    users[index] = activeUser;
   }
 
-  function toggleAddWishlist(productId, heartIcon) {
-    if (!isLoginedUser) {
-      showToast("Please log in first.");
-      return;
-    }
+  localStorage.setItem("users", JSON.stringify(users));
 
-    if (!isLoginedUser.wishlist) {
-      isLoginedUser.wishlist = [];
-    }
+  console.log("Səbətə əlavə olundu:", productId);
+}
 
-    let userIndex = users.findIndex(user => user.id === isLoginedUser.id);
-    let findProductIndex = isLoginedUser.wishlist.findIndex(item => item.id === productId);
-    let findProduct = products.find(product => product.id === productId);
-
-    if (findProductIndex === -1) {
-      isLoginedUser.wishlist.push(findProduct);
-      heartIcon.classList.add("fa-solid");
-      heartIcon.classList.remove("fa-regular");
-      toatifyByPage("Product added to wishlist.");
-    } else {
-      isLoginedUser.wishlist.splice(findProductIndex, 1);
-      heartIcon.classList.remove("fa-solid");
-      heartIcon.classList.add("fa-regular");
-      toatifyByPage("Product removed from wishlist.");
-    }
-
-    users[userIndex] = isLoginedUser;
-    localStorage.setItem("users", JSON.stringify(users));
-  }
-
-  function addBasket(productId) {
-    if (!isLoginedUser) {
-      toastifyByPage("Lütfen giriş yapın!");
-      return;
-    }
-
-    let userIndex = users.findIndex(user => user.id === isLoginedUser.id);
-    let basket = isLoginedUser.basket || [];
-
-    let findProduct = basket.find(product => product.id === productId);
-
-    if (!findProduct) {
-      let productToAdd = products.find(product => product.id === productId);
-      if (productToAdd) {
-        basket.push({ ...productToAdd, count: 1 });
-        alert("Ürün sepete eklendi.");
-      } else {
-        alert("Ürün bulunamadı.");
-        return;
-      }
-    } else {
-      findProduct.count++;
-      alert("Ürün adedi artırıldı.");
-    }
-
-    isLoginedUser.basket = basket;
-
-    users[userIndex] = isLoginedUser;
-
-    localStorage.setItem("users", JSON.stringify(users));
-    basketCount()
-  }
-
-  let toatifyByPage = (text) => {
-    Toastify({
-      text: text,
-      duration: 3000,
-      gravity: "top",
-      position: "left",
-      stopOnFocus: true,
-      style: {
-        background: "linear-gradient(to right, #00b09b, #96c93d)",
-      },
-    }).showToast();
-  };
-
-  
-  createUserCard();
-  basketCount()
+addBasketButton.addEventListener("click", () => {
+  const productId = addBasketButton.dataset.productId;
+  addBasket(productId);
 });
+
