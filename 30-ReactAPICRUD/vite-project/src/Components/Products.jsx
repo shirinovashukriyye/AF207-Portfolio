@@ -13,8 +13,7 @@ const Products = ({
 }) => {
   return (
     <div>
-      <button onClick={() => setIsModalOpen(true)}>Add</button>
-      {loading && <p>Yüklənir...</p>}
+      {loading && <p>Loading...</p>}
       <div>
         {products.map((product) => (
           <Product

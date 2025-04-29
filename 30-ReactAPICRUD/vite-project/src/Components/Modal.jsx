@@ -25,21 +25,18 @@ const Modal = ({ onCreate, onUpdate, currentProduct }) => {
 
   return (
     <div>
-      <h2>{currentProduct ? "Məhsul Redaktə et" : "Yeni Məhsul Əlavə et"}</h2>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Məhsul başlığı"
         />
         <input
           type="number"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
-          placeholder="Qiymət"
         />
-        <button type="submit">Yadda saxla</button>
+        <button type="submit">Save</button>
       </form>
     </div>
   );

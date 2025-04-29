@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 
 const Product = ({ product, onUpdate, onDelete, setIsModalOpen, setCurrentProduct }) => {
+
   return (
     <div>
       <h3>{product.title}</h3>
-      <p>{product.price} AZN</p>
+      <p>{product.price}</p>
       <button
         onClick={() => {
           setCurrentProduct(product);
@@ -14,7 +15,7 @@ const Product = ({ product, onUpdate, onDelete, setIsModalOpen, setCurrentProduc
       >
        Edit
       </button>
-      <button onClick={() => onDelete(product.id)}>Sil</button>
+      <button onClick={() => onDelete(product.id)}>Delete</button>
     </div>
   );
 };

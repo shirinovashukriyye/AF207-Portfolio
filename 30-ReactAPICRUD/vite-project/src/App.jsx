@@ -20,7 +20,7 @@ const App = () => {
       const data = await response.json();
       setProducts(data);
     } catch (error) {
-      toast.error("Məhsulların alınmasında xəta baş verdi!");
+      toast.error("There was an error purchasing the products.!");
     } finally {
       setLoading(false);
     }
@@ -28,7 +28,7 @@ const App = () => {
 
   const onCreate = (newProduct) => {
     setProducts((prevProducts) => [...prevProducts, newProduct]);
-    toast.success("Məhsul əlavə olundu!");
+    toast.success("Added product!");
   };
 
   const onUpdate = (updatedProduct) => {
@@ -36,24 +36,24 @@ const App = () => {
       product.id === updatedProduct.id ? updatedProduct : product
     );
     setProducts(updatedProducts);
-    toast.success("Məhsul yeniləndi!");
+    toast.success("Update product!");
   };
 
   const onDelete = (id) => {
     const filteredProducts = products.filter((product) => product.id !== id);
     setProducts(filteredProducts);
-    toast.success("Məhsul silindi!");
+    toast.success("Product deleted!");
   };
 
   const onReset = () => {
     setProducts([]);
-    toast.success("Bütün məhsullar sıfırlandı!");
+    toast.success("Clear all products!");
   };
 
   return (
     <div>
       <ToastContainer />
-      <button onClick={onReset}>Bütün Məhsulları Sıfırla</button>
+      <button onClick={onReset}>Clear all products</button>
       <Products
         products={products}
         loading={loading}
