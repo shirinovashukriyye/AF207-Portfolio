@@ -1,0 +1,48 @@
+.loginContainer {
+    width: 400px;
+    box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px,
+      rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    margin: 95px auto;
+  }
+  .loginContainer input {
+    width: 300px;
+    height: 35px;
+    border-radius: 10px;
+  }.loginContainer #password {
+    width: 100px;
+    height: 35px;
+    border-radius: 10px;
+  }
+  .loginContainer  .css-7549ua-MuiFormControl-root{
+    width: 96% !important;
+  }
+  .loginContainer h1 {
+    margin: 15px 0;
+    text-align: center;
+  }
+  .btn-submit {
+    width: 100%;
+    background-color: rgb(245, 129, 52);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    height: 40px;
+    font-weight: 600;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+  .error {
+    color: red;
+    font-size: 14px;
+  }
+  .label-container{
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+  }
