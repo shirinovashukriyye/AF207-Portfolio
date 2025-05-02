@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import "./Products.css";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -10,8 +10,10 @@ import Button from "@mui/material/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchProducts } from "../../redux/features/ProductSlice";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { addToWishlist } from "../../redux/features/WishlistSlice";
-import { toast } from "react-toastify";
+import { addToWishlist } from "../../redux/features/WishlistSlice";  // Line 13
+import { toast } from "react-toastify";  // Line 14
+
+
 
 const Products = () => {
     const [heart, setHeart] = useState([]);
