@@ -1,0 +1,10 @@
+.headerDiv {
+  background-color: rgb(34, 34, 34);
+  height: 70px;
+}
+.headerInsideDiv {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 70px;
+}
