@@ -45,15 +45,11 @@ const RegisterForm = () => {
     });
 
   const submitForm = async (values, action) => {
-    const { data } = await axios.get("http://localhost:3000/users");
-
-    const existUser = data.find(
+    const response = await axios.get("http://localhost:3000/users");
+    const users = response.data.users || [];  
+    const existUser = users.find(
       (user) => user.email === values.email || user.username === values.username
     );
-    if (existUser) {
-      notify("User alraedy exist", "error");
-      return;
-    }
 
     await axios.post("http://localhost:3000/users", values);
     console.log(values);

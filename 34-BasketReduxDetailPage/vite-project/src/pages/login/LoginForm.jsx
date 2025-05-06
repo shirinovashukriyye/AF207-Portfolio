@@ -46,31 +46,36 @@ const LoginForm = () => {
       theme: "light",
     });
 
-  const submitForm = async (values, action) => {
-    const res = await axios.get("http://localhost:3000/users");
-
-    const findUser = res.data.find(
-      (user) =>
-        user.username === values.username && user.password === values.password
-    );
-
-    if (!findUser) {
-      notify("Invalid user", "error");
-      return;
-    } else {
-      const updatedUser = { ...findUser, isLogin: true };
-
-      await axios.put(
-        `http://localhost:3000/users/${updatedUser.id}`,
-        updatedUser
-      );
-      notify("Login successfull", "success");
-      setTimeout(() => {
-        action.resetForm();
-        navigate("/");
-      }, 2000);
-    }
-  };
+    const submitForm = async (values, action) => {
+      try {
+        const res = await axios.get("http://localhost:3000/users");
+        console.log("API cavabı:", res.data.users);
+    
+        const findUser = res.data.users.find(
+          (user) => user.username === values.username && user.password === values.password
+        );
+    
+        if (!findUser) {
+          notify("Invalid user", "error");
+          return;
+        } else {
+          const updatedUser = { ...findUser, isLogin: true };
+    
+          await axios.put(
+            `http://localhost:3000/users/${updatedUser.id}`,
+            updatedUser
+          );
+          notify("Login successful", "success");
+          setTimeout(() => {
+            action.resetForm();
+            navigate("/");
+          }, 2000);
+        }
+      } catch (error) {
+        console.error("Login error:", error);
+        notify("An error occurred. Please try again.", "error");
+      }
+    };
 
   const { values, handleChange, resetForm, handleSubmit, errors } = useFormik({
     initialValues: {
