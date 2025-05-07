@@ -1,0 +1,18 @@
+{
+    "students": [
+        {
+            "id": 1,
+            "name": "Şükriyyə",
+            "surname": "Şirinova",
+            "age": 20,
+            "isStudent": true
+        },
+        {
+            "id": 1746611389800,
+            "name": "Şükriyyəfytfvgjh",
+            "surname": "Şirinova",
+            "age": 20,
+            "isStudent": true
+        }
+    ]
+}
